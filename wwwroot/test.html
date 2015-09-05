@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title></title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+<!--<div ng-app="myApp" class="container">-->
+    <!--<div ng-controller="myCtrl" class="container">-->
+        <!--{{filett}}-->
+        <!--{{ firstName + " " + lastName }}-->
+    <!--</div>-->
+    <!--<div ng-controller="myCtrl2" class="container">-->
+        <!--{{ firstName + " " + lastName }}-->
+    <!--</div>-->
+
+<!--</div>-->
+<div ng-app="myApp" class="container">
+    <div ng-controller="fileBtnCtrl" class="container">
+        {{ filett }}
+    </div>
+    <div ng-controller="breadPathCtrl" class="container">
+        {{filett}}
+    </div>
+</div>
+
+
+<!--var app = angular.module("myApp", []);-->
+<!--trace("app ",app);-->
+<!--app.controller("fileBtnCtrl", function ($scope) {-->
+<!--//test-->
+<!--$scope.firstName = "John";-->
+<!--$scope.lastName = "Doe";-->
+<!--$scope.filett="ni mei"-->
+<!--trace("app 1");-->
+<!--});-->
+<!--app.controller("breadPathCtrl", function ($scope) {-->
+<!--//面包屑路径控制-->
+<!--$scope.firstName = "Jodsfsdfhn";-->
+<!--$scope.lastName = "Ddfdfdoe";-->
+<!--trace("app 22");-->
+<!--});-->
+
+<script src="js/angular.min.js"></script>
+<script src="js/jquery-1.11.3.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/common.js"></script>
+<script src="js/file.js"></script>
+</body>
+
+
+</html>

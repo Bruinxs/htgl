@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title></title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <style>
+        a.no-underline-bulecolor {
+            text-decoration: none;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!--<div class="navbar-header">-->
+        <!--<a class="navbar-brand" href="#">-->
+        <!--<img alt="Brand" src="#">-->
+        <!--</a>-->
+        <!--</div>-->
+        <ul id="navli" class="nav nav-pills">
+            <li role="presentation"><a href="home.html">Home</a></li>
+            <li role="presentation" class="active"><a href="filemanage.html">FileManage</a></li>
+            <li role="presentation"><a href="#">Messages</a></li>
+        </ul>
+    </div>
+</nav>
+
+<div ng-app="fileApp" class="container">
+
+    <!--按钮组-->
+    <div ng-controller="fileBtnCtrl" class="container">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <button ng-click="uploadBtnClick()" class="btn btn-large" type="button">上传文件</button>
+                <button ng-click="makedirBtnClick()" class="btn btn-large" type="button">新建文件夹</button>
+                <button ng-click="downloadBtnClick()" class="btn btn-large" type="button">文件下载</button>
+                <button ng-click="movetoBtnClick()" class="btn btn-large" type="button">移动到</button>
+                <button ng-click="copytoBtnClick()" class="btn btn-large" type="button">复制到</button>
+                <button ng-click="renameBtnClick()" class="btn btn-large" type="button">重命名</button>
+                <button ng-click="removeBtnClick()" class="btn btn-large" type="button">删除</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!--路径-->
+    <div ng-controller="breadPathCtrl" class="container">
+        <ul class="breadcrumb">
+            <li class="btn btn-link">返回上一级 |</li>
+            <li><a href="#">Home</a> <span class="divider">/</span></li>
+            <li><a href="#">Library</a> <span class="divider">/</span></li>
+            <li class="active">Data</li>
+        </ul>
+    </div>
+
+    <!--文件列表-->
+    <div ng-controller="fileListCtrl" class="container">
+        <div style="height:500px;overflow:auto; position: relative;">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>选择</th>
+                    <th>文件名</th>
+                    <th>大小</th>
+                    <th>修改日期</th>
+                    <th>MD5</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="t in filelist">
+                    <td><input type="checkbox" ng-model="t.fileselect"></td>
+                    <!--<td><p ng-bind="t.fileselect"></p></td>-->
+                    <td>{{t.filename}}</td>
+                    <td>{{t.filesize}}</td>
+                    <td>{{t.filedate}}</td>
+                    <td>{{t.filemd5}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!--模态框-->
+    <div id="modalCtrlID" ng-controller="modalCtrl" class="container">
+        <!--modal-->
+        <div id="modalidentifier" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span
+                                class="sr-only">关闭</span></button>
+                        <h4 class="modal-title">{{title}}</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div ng-show="showmanage[type.uploadfile]">
+                            <input id="fileselect" type="file" multiple style="display: none"/>
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th>文件名</th>
+                                    <th>大小</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="t in filelist">
+                                    <td>{{t.filename}}</td>
+                                    <td>{{t.filesize}} bytes</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" ng-click="leftBtnClick()">
+                            {{leftbtn}}
+                        </button>
+                        <button type="button" class="btn btn-primary"  ng-click="rightBtnClick()">
+                            {{rightbtn}}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="js/angular.min.js"></script>
+<script src="js/jquery-1.11.3.min.js"></script>
+<script src="js/bootstrap-modal.min.js"></script>
+<!--<script src="http://www.runoob.com/try/bootstrap/twitter-bootstrap-v2/js/bootstrap-modal.js"></script>-->
+<script src="js/permission.js"></script>
+<script src="js/common.js"></script>
+<script src="js/file.js"></script>
+</body>
+</html>
