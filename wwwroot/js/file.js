@@ -7,6 +7,10 @@
     var _fileList;   //文件列表内容
     var _filePath;  //当前文件列表路径
 
+    _currentPath = function () {
+        return _filePath;
+    };
+
     //路由设置
     (function () {
         _route.removeFile = "/removefile";    //删除文件路由
@@ -25,26 +29,6 @@
 
     //按钮行为控制
     (function () {
-        //请求返回包的解析及排查
-        var parseAndCheck = function (result) {
-            var rel = JSON.parse(result);
-            if (!rel) {
-                _warn("解析失败");
-                trace("解析失败", result);
-                return;
-            }
-            if (!rel.status || rel.status == 0) {
-                _warn("操作失败，状态：" + rel.status + ",错误：" + rel.content);
-                return;
-            }
-            return rel;
-        };
-
-        //请求错误处理
-        var errorHandler = function (xhr, status, error) {
-            _warn("请求失败，错误信息：" + error);
-        };
-
         //数据包
         var newPack = function (currentpath, filename, filelist) {
             var pack = {};
@@ -59,6 +43,7 @@
             }
             return pack;
         };
+        _newPack = newPack;
 
         //文件信息
         var newFileInfo = function (selected, name, size, date, md5) {
@@ -130,13 +115,13 @@
                 url: _route.makedirFile,
                 data: newPack(_filePath, name),
                 success: function (result) {
-                    var rel = parseAndCheck(result);
+                    var rel = _parseAndCheck(result);
                     if (rel) {
                         var obj = JSON.parse(rel.content);
                         _fileList.push(newFileInfo(false, obj.filename, "--", rel.filedate, "--"));
                     }
                 },
-                error: errorHandler
+                error: _errorHandler
             });
         };
 
@@ -178,12 +163,12 @@
                 url: _route.renameFile,  //重命名请求路径
                 data: newPack(_filePath, _fileList[renameIndex].fileName),//{currentFilePath: _filePath, fileName: _fileList[renameIndex].fileName},
                 success: function (result) {
-                    var rel = parseAndCheck(result);
+                    var rel = _parseAndCheck(result);
                     if (rel) {
                         _fileList[renameIndex].filename = rel.content;
                     }
                 },
-                error: errorHandler
+                error: _errorHandler
             });
         };
 
@@ -221,7 +206,7 @@
                 url: _route.removeFile,  //删除请求路径
                 data: newPack(_filePath, null, delfile),//{currentFilePath: _filePath, fileNameList: delfile},
                 success: function (result) {
-                    var rel = parseAndCheck(result);
+                    var rel = _parseAndCheck(result);
                     if (rel) {
                         var arr = JSON.parse(rel.content);
                         if (!arr || arr.length == undefined) {
@@ -234,7 +219,7 @@
                         }
                     }
                 },
-                error: errorHandler
+                error: _errorHandler
             });
         };
 
