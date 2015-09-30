@@ -255,8 +255,8 @@
         });
     })();
 
+    //文件列表控制
     (function () {
-        //文件列表控制
         var files = [{fileselect: false, filename: "test11", filesize: "64k", filedate: "2015-7-1"},
             {fileselect: false, filename: "test22", filesize: "64k", filedate: "2015-7-1"},
             {fileselect: false, filename: "test33", filesize: "64k", filedate: "2015-7-1"},
