@@ -2,30 +2,31 @@
  * Created by PCXS on 2015/8/31.
  */
 
-(function () {
+(function (manager) {
     var _fileApp = angular.module("fileApp", []);
     var _fileList;   //文件列表内容
     var _filePath;  //当前文件列表路径
 
-    _currentPath = function () {
-        return _filePath;
-    };
+    if (manager) {
+        manager._currentPath = function () {
+            return _filePath;
+        };
+    }
 
     //路由设置
-    (function () {
-        _route.removeFile = "/removefile";    //删除文件路由
-        _route.renameFile = "/renamefile";    //重命名文件
-        _route.makedirFile = "/makedirfile";  //新建文件夹
-    })();
+    _route.removeFile = "/removefile";    //删除文件路由
+    _route.renameFile = "/renamefile";    //重命名文件
+    _route.makedirFile = "/makedirfile";  //新建文件夹
+    _route.fileList = "/filelist";    //文件列表
 
     //权限定义
-    (function () {
-        _permissionID.removeFile = 0;   //删除文件
-        _permissionID.renameFile = 1;   //重命名文件
-        _permissionID.makedirFile = 2;    //新建文件夹
-        _permissionID.downloadFile = 3;   //下载文件
-        _permissionID.uploadFile = 4; //上传文件
-    })();
+    _permissionID.removeFile = 0;   //删除文件
+    _permissionID.renameFile = 1;   //重命名文件
+    _permissionID.makedirFile = 2;    //新建文件夹
+    _permissionID.downloadFile = 3;   //下载文件
+    _permissionID.uploadFile = 4; //上传文件
+    _permissionID.moveFile = 5;   //移动文件
+    _permissionID.copyFile = 6;   //复制文件
 
     //按钮行为控制
     (function () {
@@ -43,18 +44,19 @@
             }
             return pack;
         };
-        _newPack = newPack;
+        if (manager) {
+            manager._newPack = newPack;
+        }
 
         //文件信息
         var newFileInfo = function (selected, name, size, date, md5) {
-            var file = {
+            return {
                 fileselect: selected,
                 filename: name,
                 filesize: size + "bytes",
                 filedate: date,
                 filemd5: md5
             };
-            return file;
         };
 
         //上传文件
@@ -128,11 +130,23 @@
         //移动到
         var movetoBtnClick = function () {
             trace("movetoBtnClick");
+            if (!_isPermissible(_permissionID.moveFile)) {
+                _permissionError("移动文件");
+                return;
+            }
+            _setModalType(_modalType.movefile);
+            $("#modalidentifier").modal();
         };
 
         //复制到
         var copytoBtnClick = function () {
             trace("copytoBtnClick");
+            if (!_isPermissible(_permissionID.copyFile)) {
+                _permissionError("复制文件");
+                return;
+            }
+            _setModalType(_modalType.copyfile);
+            $("#modalidentifier").modal();
         };
 
         //重命名文件
@@ -240,8 +254,8 @@
         });
     })();
 
+    //文件列表控制
     (function () {
-        //文件列表控制
         var files = [{fileselect: false, filename: "test11", filesize: "64k", filedate: "2015-7-1"},
             {fileselect: false, filename: "test22", filesize: "64k", filedate: "2015-7-1"},
             {fileselect: false, filename: "test33", filesize: "64k", filedate: "2015-7-1"},
@@ -265,6 +279,9 @@
             var type = {};
 
             type.uploadfile = 0;  //上传文件模态框
+            type.directorytree = 1;   //目录树模态框
+            type.movefile = 2;
+            type.copyfile = 3;
 
             return type;
         })();
@@ -282,14 +299,80 @@
                         if (k > 0) {
                             modalScope.filelist.length = 0;
                         }
+                        modalScope.showmanage[_modalType.uploadfile] = false;
                     }, null, null, 1);
                     $("#fileselect").get(0).click();
                 };
 
                 modalScope.rightBtnClick = function () {
+                    manager._uploadFiles($("#fileselect").get(0).files);
+                };
+            } else if (type == _modalType.copyfile || type == _modalType.movefile) {
+                modalScope.title = type == _modalType.copyfile ? "复制到" : "移动到";
+                modalScope.showmanage [_modalType.directorytree] = true;
+                modalScope.leftbtn = "取消";
+                modalScope.rightbtn = "确定";
 
+                modalScope.leftBtnClick = function () {
+                    var o = $("#modalidentifier");
+                    o.on("hidden.bs.modal", function (e) {
+                        modalScope.showmanage[_modalType.directorytree] = false;
+                    }, null, null, 1);
+                    //o.hide();
+                    o.modal('hide');
+                };
+
+                modalScope.rightBtnClick = function () {
+                    $("#modalidentifier").on("hidden.bs.modal", function (e) {
+                        modalScope.showmanage[_modalType.directorytree] = false;
+                    }, null, null, 1);
                 };
             }
+        };
+
+        //请求目录列表
+        var requestChildDir = function (path) {
+
+            this._list = [newDir({}, "a/b", "name_fiel"),
+                newDir({}, "a/b", "name_fiel"),
+                newDir({}, "a/b", "name_fiel"),
+                newDir({}, "a/b", "name_fiel"),
+                newDir({}, "a/b", "name_fiel")
+            ];
+            return;
+
+            path = path || this._path;
+            ajax({
+                url: _route.fileList,
+                data: {path: path},
+                context: this,
+                success: function (result) {
+                    var rel = _parseAndCheck(result);
+                    if (rel) {
+                        var arr = JSON.parse(rel.content);
+                        var len = arr.length;
+                        if (!len) {
+                            trace("requestChildDir success arr is not array");
+                        }
+                        this._list.length = len;
+                        for (var i = 0; i < len; i++) {
+                            this._list[i] = newDir({}, this._path + "/" + arr[i], arr[i]);
+                        }
+                        //modalScope.$apply();
+                    }
+                },
+                error: _errorHandler
+            })
+        };
+
+        var newDir = function (o, path, name) {
+            o = o || {};
+            o._path = path || "/";
+            o._list = [];
+            o._name = name || "";
+            o._isshow = true;
+            o._childDir = requestChildDir;
+            return o;
         };
 
         _fileApp.controller("modalCtrl", function ($scope) {
@@ -318,6 +401,13 @@
             $("#fileselect").get(0).onchange = function () {
                 $scope.onFileSelect(this.files);
             };
+
+            //目录树
+            $scope.showmanage[$scope.type.directorytree] = false;
+            $scope.rootdir = newDir();
+            $scope.rootdir._childDir();
+            $scope.selectdir = $scope.rootdir;
         });
     })();
-})();
+
+})(_fileManager);

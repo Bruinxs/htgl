@@ -95,6 +95,8 @@
                         <h4 class="modal-title">{{title}}</h4>
                     </div>
                     <div class="modal-body">
+
+                        <!--上传文件-->
                         <div ng-show="showmanage[type.uploadfile]">
                             <input id="fileselect" type="file" multiple style="display: none"/>
                             <table class="table table-hover">
@@ -113,12 +115,25 @@
                             </table>
                         </div>
 
+                        <!--目录树-->
+                        <div ng-show="showmanage[type.directorytree]">
+                            <div class="list-group">
+                                <ul ng-repeat="f in rootdir._list" type="button" class="list-group-item btn btn-default"
+                                    style="text-align:left;">
+                                    {{f._name}}
+                                    <div ng-if="f._isshow && f._list!=null" class="list-group">
+
+                                    </div>
+                                </ul>
+                            </div>
+                        </div>
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" ng-click="leftBtnClick()">
                             {{leftbtn}}
                         </button>
-                        <button type="button" class="btn btn-primary"  ng-click="rightBtnClick()">
+                        <button type="button" class="btn btn-primary" ng-click="rightBtnClick()">
                             {{rightbtn}}
                         </button>
                     </div>
