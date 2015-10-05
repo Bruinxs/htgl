@@ -116,16 +116,7 @@
                         </div>
 
                         <!--目录树-->
-                        <div ng-show="showmanage[type.directorytree]">
-                            <div class="list-group">
-                                <ul ng-repeat="f in rootdir._list" type="button" class="list-group-item btn btn-default"
-                                    style="text-align:left;">
-                                    {{f._name}}
-                                    <div ng-if="f._isshow && f._list!=null" class="list-group">
-
-                                    </div>
-                                </ul>
-                            </div>
+                        <div id="rootdirectory" ng-show="showmanage[type.directorytree]">
                         </div>
 
                     </div>
@@ -144,19 +135,22 @@
 
 </div>
 
-<script src="js/angular.min.js"></script>
-<script src="js/jquery-1.11.3.min.js"></script>
-<script src="js/bootstrap-modal.min.js"></script>
-<!--<script src="http://www.runoob.com/try/bootstrap/twitter-bootstrap-v2/js/bootstrap-modal.js"></script>-->
-<<<<<<< HEAD
+<!--<script src="js/angular.min.js"></script>-->
+<!--<script src="js/jquery-1.11.3.min.js"></script>-->
+<!--<script src="js/bootstrap-modal.min.js"></script>-->
+
+<script src="js/angular.js"></script>
+<script src="js/jquery-1.11.3.js"></script>
+<script src="js/bootstrap-modal.js"></script>
+
 <script src="common/permission.js"></script>
 <script src="common/common.js"></script>
-<script src="filemanage/file.js"></script>
-=======
-<script src="js/permission.js"></script>
-<script src="js/common.js"></script>
+
 <script src="filemanage/uploadfile.js"></script>
-<script src="js/file.js"></script>
->>>>>>> 7b011863bf25e597f6fb2d8e41543d4e451b0a7e
+<script src="filemanage/filelistctr.js"></script>
+<script src="filemanage/breadctr.js"></script>
+<script src="filemanage/modalctr.js"></script>
+<script src="filemanage/buttonctr.js"></script>
+
 </body>
 </html>

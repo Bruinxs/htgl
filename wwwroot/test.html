@@ -8,13 +8,13 @@
 </head>
 <body>
 <!--<div ng-app="myApp" class="container">-->
-    <!--<div ng-controller="myCtrl" class="container">-->
-        <!--{{filett}}-->
-        <!--{{ firstName + " " + lastName }}-->
-    <!--</div>-->
-    <!--<div ng-controller="myCtrl2" class="container">-->
-        <!--{{ firstName + " " + lastName }}-->
-    <!--</div>-->
+<!--<div ng-controller="myCtrl" class="container">-->
+<!--{{filett}}-->
+<!--{{ firstName + " " + lastName }}-->
+<!--</div>-->
+<!--<div ng-controller="myCtrl2" class="container">-->
+<!--{{ firstName + " " + lastName }}-->
+<!--</div>-->
 
 <!--</div>-->
 <div ng-app="myApp" class="container">
@@ -26,28 +26,29 @@
     </div>
 </div>
 
-
-<!--var app = angular.module("myApp", []);-->
-<!--trace("app ",app);-->
-<!--app.controller("fileBtnCtrl", function ($scope) {-->
-<!--//test-->
-<!--$scope.firstName = "John";-->
-<!--$scope.lastName = "Doe";-->
-<!--$scope.filett="ni mei"-->
-<!--trace("app 1");-->
-<!--});-->
-<!--app.controller("breadPathCtrl", function ($scope) {-->
-<!--//面包屑路径控制-->
-<!--$scope.firstName = "Jodsfsdfhn";-->
-<!--$scope.lastName = "Ddfdfdoe";-->
-<!--trace("app 22");-->
-<!--});-->
-
-<script src="js/angular.min.js"></script>
-<script src="js/jquery-1.11.3.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
+<script src="js/angular.js"></script>
+<script src="js/jquery-1.11.3.js"></script>
 <script src="common/common.js"></script>
-<script src="filemanage/file.js"></script>
+<!--<script src="filemanage/modalctr.js"></script>-->
+
+<script>
+    var app = angular.module("myApp", []);
+    trace("app ", app);
+    app.controller("fileBtnCtrl", function ($scope) {
+//test
+        $scope.firstName = "John";
+        $scope.lastName = "Doe";
+        $scope.filett = "ni mei"
+        trace("app 1");
+    });
+    var app1 = app || angular.module("myApp", []);
+    app1.controller("breadPathCtrl", function ($scope) {
+//面包屑路径控制
+        $scope.firstName = "Jodsfsdfhn";
+        $scope.filett = "Ddfdfdoe";
+        trace("app 22");
+    });
+</script>
 </body>
 
 

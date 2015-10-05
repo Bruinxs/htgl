@@ -2,18 +2,20 @@
  * Created by PCXS on 2015/9/5.
  */
 
+var _fileManager = _fileManager || {};
+
 (function (manager) {
     //路由设置
     _route.checkfile = "/checkfile";  //检查文件 权限，重名，断点
     _route.uploadfile = "/uploadfile";    //上传文件
 
-    manager._newPack = function (currentpath, filename, filelist) {
-        return {currentFilePath: currentpath, fileName: filename, fileNameList: filelist};
-    };
+    //manager._newPack = function (currentpath, filename, filelist) {
+    //    return {currentFilePath: currentpath, fileName: filename, fileNameList: filelist};
+    //};
 
-    manager._currentPath = function () {
-        return ""
-    };
+    //manager._currentPath = function () {
+    //    return ""
+    //};
 
     manager._uploadFiles = (function () {
         var uploadSize = 1024 * 1024;  //每次上传的数据大小
@@ -182,7 +184,7 @@
                 var file = files[i];
                 ajax({
                     url: _route.checkfile,
-                    data: _newPack(_currentPath(), file.name),
+                    data: manager._newPack(manager._currentPath, file.name),
                     context: file,
                     success: function (result) {
                         var rel = _parseAndCheck(result);
@@ -199,6 +201,4 @@
         };
     })();
 
-})(_fileManager = _fileManager || {});
-
-var _fileManager;
+})(_fileManager);
