@@ -9,18 +9,11 @@ var _fileManager = _fileManager || {};
     _route.checkfile = "/checkfile";  //检查文件 权限，重名，断点
     _route.uploadfile = "/uploadfile";    //上传文件
 
-    //manager._newPack = function (currentpath, filename, filelist) {
-    //    return {currentFilePath: currentpath, fileName: filename, fileNameList: filelist};
-    //};
-
-    //manager._currentPath = function () {
-    //    return ""
-    //};
-
     manager._uploadFiles = (function () {
         var uploadSize = 1024 * 1024;  //每次上传的数据大小
         var number = "number"; //number 字段，表示第几块
         var blob = "blob";   //blob 表示二进制块
+        var iden="iden";    //临时标识
         var isHandling = false;
         var uploadThread = 0;
         manager._maxUploadThread = 3; //最大同时上传文件数
@@ -41,10 +34,10 @@ var _fileManager = _fileManager || {};
             }
         };
 
-        var nextload = function (file, i, n, start, end, router) {
+        var nextload = function (file, i, n, start, end, iden) {
             formdata.append(number, i);
             formdata.append(blob, blobSlice.call(file, start, end));
-            xhr.open("POST", router, true);
+            xhr.open("POST", _route.uploadfile, true);
             xhr.upload.onloadend = function () {
                 trace(file.name + " is load end " + i + "/" + n);
                 if (i < n) {
@@ -54,7 +47,7 @@ var _fileManager = _fileManager || {};
                         e = file.size;
                     }
                     fileUplandHandler(file, 1, (i + 1) / n);
-                    nextload(file, i + 1, n, s, e, router);
+                    nextload(file, i + 1, n, s, e, iden);
                 } else {
                     fileUplandHandler(file, 2);
                     uploadThread--;
@@ -65,14 +58,14 @@ var _fileManager = _fileManager || {};
         };
 
         //size:已经上传的大小  router:临时路由
-        var upload = function (file, hadsize, router) {
+        var upload = function (file, hadsize, iden) {
             uploadThread++;
             var filesize = this.size - hadsize;   //还需要上传的数据大小
             var num = Math.ceil(filesize / uploadSize);
             var start = hadsize;
             var end = start + uploadSize;
             fileUplandHandler(file, 0);    //开始上传
-            nextload(file, 0, num, start, end, router);
+            nextload(file, 0, num, start, end, iden);
         };
 
         var uploadNextFile = function () {
@@ -81,7 +74,7 @@ var _fileManager = _fileManager || {};
                 isHandling = false;
                 return;
             }
-            upload(o.file, o.hadsize, o.tmproute);
+            upload(o.file, o.hadsize, o.tmpiden);
         };
 
         var handleUploadQueue = function () {
@@ -93,7 +86,7 @@ var _fileManager = _fileManager || {};
             for (var i = 0, count = manager._maxUploadThread - uploadThread; i < count; i++) {
                 o = manager._uploadQueue.pop();
                 if (o) {
-                    upload(o.file, o.hadsize, o.tmproute);
+                    upload(o.file, o.hadsize, o.tmpiden);
                 }
             }
         };
@@ -184,6 +177,7 @@ var _fileManager = _fileManager || {};
                 var file = files[i];
                 ajax({
                     url: _route.checkfile,
+                    type:"POST",
                     data: manager._newPack(manager._currentPath, file.name),
                     context: file,
                     success: function (result) {
@@ -191,7 +185,7 @@ var _fileManager = _fileManager || {};
                         if (rel) {
                             var obj = JSON.parse(rel.content);
                             var queue = manager._uploadQueue || initUploadQueue(manager);
-                            queue.push({file: this, hadsize: obj.size, tmproute: obj.route});
+                            queue.push({file: this, hadsize: obj.size, tmpiden: obj.iden});
                             startHandleUploadQueue();
                         }
                     },

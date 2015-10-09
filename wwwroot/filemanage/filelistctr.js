@@ -13,6 +13,29 @@ var _fileManager = _fileManager || {};
 
     manager._fileList = [];  //文件列表
 
+    //文件信息
+    manager._newFileInfo = function (selected, name, size, date, md5) {
+        if (arguments.length > 1) {
+            return {
+                fileselect: selected,
+                filename: name,
+                filesize: size == "--" ? size : size + " bytes",
+                filedate: date,
+                filemd5: md5
+            };
+        }
+        var obj = arguments[0];
+        if (!obj) {
+            return {};
+        }
+        if (obj.fileselect == undefined) {
+            obj.fileselect = false;
+        }
+        size = obj.filesize;
+        obj.filesize = size == "--" ? size : size + " bytes";
+        return obj;
+    };
+
     //数据包
     manager._newPack = function (currentpath, filename, filelist) {
         var pack = {};
@@ -45,11 +68,12 @@ var _fileManager = _fileManager || {};
                     }
                     manager._fileList.length = len;
                     for (var i = 0; i < len; i++) {
-                        if (arr[i].fileselect == undefined) {
-                            arr[i].fileselect = false
-                        }
+                        manager._newFileInfo(arr[i]);
                         manager._fileList[i] = arr[i];
                     }
+                    listScope.$apply();
+
+                    manager._setCurrentPath(path);
                 }
             },
             error: _errorHandler
@@ -58,8 +82,20 @@ var _fileManager = _fileManager || {};
 
     manager._requestFileList();
 
+    var listScope;
     _fileApp.controller("fileListCtrl", function ($scope) {
         $scope.filelist = manager._fileList;
+        $scope.onItemClick = function (i) {
+            var f = $scope.filelist[i];
+            if (f.filesize != "--") {
+                return;
+            }
+            var current = manager._currentPath;
+            var path = current + (current.charAt(current.length - 1) == '/' ? "" : "/") + f.filename;
+            manager._requestFileList(path);
+        };
+
+        listScope = $scope;
     });
 
 })(_fileManager);

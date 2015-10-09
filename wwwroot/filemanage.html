@@ -49,10 +49,11 @@
     <!--路径-->
     <div ng-controller="breadPathCtrl" class="container">
         <ul class="breadcrumb">
-            <li class="btn btn-link">返回上一级 |</li>
-            <li><a href="#">Home</a> <span class="divider">/</span></li>
-            <li><a href="#">Library</a> <span class="divider">/</span></li>
-            <li class="active">Data</li>
+            <li class="btn btn-link" ng-click="onHomeClick()">全部文件 |</li>
+            <li ng-repeat="p in paths" ng-click="onItemClick($index)">
+                <a href="#">{{p}}</a> <span class="divider">/</span>
+            </li>
+            <li class="active">{{current}}</li>
         </ul>
     </div>
 
@@ -70,7 +71,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="t in filelist">
+                <tr ng-repeat="t in filelist" ng-click="onItemClick($index)">
                     <td><input type="checkbox" ng-model="t.fileselect"></td>
                     <!--<td><p ng-bind="t.fileselect"></p></td>-->
                     <td>{{t.filename}}</td>

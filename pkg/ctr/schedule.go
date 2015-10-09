@@ -12,12 +12,16 @@ import (
 //配置文件字段
 var (
 	wwwroot = "wwwroot" //静态资源根目录
+	port    = "port"    //端口
 	filedir = "filedir" //文件管理目录
 )
 
 var (
 	//日志前缀
 	logprefix = "schedule:"
+
+	//路由
+	route = router.NewRouter()
 )
 
 //开始程序
@@ -29,10 +33,21 @@ func Start() {
 		log.LogFatal(logprefix, "解析配置文件时发生错误，", err)
 	}
 
+	initRoute()
 	initWwwroot()
 	initFileManager()
 
-	router.Listen()
+	route.Listen()
+}
+
+//初始化端口
+func initRoute() {
+	p := config.Value(port)
+	if v, k := p.(float64); k {
+		route.SetPort(int64(v))
+	} else {
+		log.LogFatal(logprefix, "获取端口失败")
+	}
 }
 
 //初始化根目录
@@ -44,7 +59,7 @@ func initWwwroot() {
 	} else {
 		root = s.(string)
 	}
-	router.AddHandle("/", http.FileServer(http.Dir(root)))
+	route.AddHandle("/", http.FileServer(http.Dir(root)))
 }
 
 //初始化文件管理模块
@@ -59,5 +74,5 @@ func initFileManager() {
 	} else {
 		log.LogError(logprefix, "获取文件管理目录失败")
 	}
-	router.AddHandlers(files.Rmux)
+	route.AddHandlers(files.Rmux)
 }

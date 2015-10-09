@@ -66,8 +66,12 @@ func newFileList(infos []os.FileInfo) []map[string]string {
 		m := make(map[string]string)
 		f := infos[i]
 
+		size := "--"
+		if !f.IsDir() {
+			size = strconv.FormatInt(f.Size(), 10)
+		}
 		m[filename] = f.Name()
-		m[filesize] = strconv.FormatInt(f.Size(), 10)
+		m[filesize] = size
 		m[filedate] = f.ModTime().String()
 		m[filemd5] = "--"
 

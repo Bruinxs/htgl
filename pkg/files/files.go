@@ -28,6 +28,9 @@ var (
 func init() {
 	//文件列表
 	Rmux.Add("/filelist", http.HandlerFunc(filelist))
+
+	//检查要上传的文件
+	Rmux.Add("/checkfile", http.HandlerFunc(checkfile))
 }
 
 //添加目录给该模块管理
@@ -37,10 +40,10 @@ func AddDirectory(dir ...string) {
 		if !fpath.IsExist(dir[i]) {
 			fpath.MakeDir(dir[i])
 		}
-		dirname = append(dirname, filepath.Base(dir[i]))
+		p := filepath.Clean(dir[i])
+		dirname = append(dirname, filepath.Base(p))
+		directorys = append(directorys, p)
 	}
-
-	directorys = append(directorys, dir...)
 
 	if len(dirname) != len(directorys) {
 		log.LogError(logprefix, "添加文件管理目录时错误", "文件夹名长度:", len(dirname), "目录长度:", len(directorys), "不相等")

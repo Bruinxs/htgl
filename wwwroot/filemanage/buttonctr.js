@@ -22,17 +22,6 @@ var _fileManager = _fileManager || {};
     _permissionID.moveFile = 5;   //移动文件
     _permissionID.copyFile = 6;   //复制文件
 
-    //文件信息
-    manager._newFileInfo = function (selected, name, size, date, md5) {
-        return {
-            fileselect: selected,
-            filename: name,
-            filesize: size + "bytes",
-            filedate: date,
-            filemd5: md5
-        };
-    };
-
     //上传文件
     var uploadBtnClick = function () {
         trace("uploadBtnClick");

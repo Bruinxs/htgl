@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"htgl/pkg/fpath"
+	"htgl/pkg/log"
 	"os"
 	"strings"
 )
@@ -27,6 +28,9 @@ var (
 		file: "default.config",
 		data: make(map[string]interface{}),
 	}
+
+	//日志前缀
+	logprefix = "config:"
 )
 
 //读取配置信息
@@ -72,6 +76,8 @@ func (this *conf) read() (err error) {
 	}
 
 	err = json.Unmarshal([]byte(js), &this.data)
+	log.LogDebug(logprefix, "读取配置文件信息:", this.data)
+
 	return
 }
 

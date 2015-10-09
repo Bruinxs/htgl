@@ -45,7 +45,10 @@ func transformPath(p string) (path string) {
 	if p != "/" && len(p) > 1 && p[0] == '/' {
 		slice := strings.SplitN(p, "/", 3)
 		p = slice[1]
-		path = slice[2]
+		path = ""
+		if len(slice) >= 3 {
+			path = slice[2]
+		}
 		l := len(dirname)
 		for i := 0; i < l; i++ {
 			if p == dirname[i] {
